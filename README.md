@@ -5,7 +5,7 @@ built with **Flask**, **SQLite**, and **Chart.js**.
 
 ## Project Members
 
-1. Toib Ujjawal — RA2411030030061
+1. [Toib Fayaz] — RA2411030030061
 2. [Ujjawal Sharma] — RA2411030030054
 
 ## 📁 Project Documents
