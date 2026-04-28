@@ -1,0 +1,1450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ICC Champions Trophy 2025 — Analytics</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<style>
+:root{--bg:#080c18;--surface:#0f1628;--s2:#162035;--border:#1e2d4a;--gold:#f0a500;--gold2:#ffc94a;--cyan:#00c9ff;--green:#22c55e;--red:#ef4444;--purple:#a78bfa;--text:#e2e8f0;--muted:#64748b;--r:10px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh}
+header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:64px;position:sticky;top:0;z-index:100}
+.logo{display:flex;align-items:center;gap:12px}
+.logo-icon{font-size:1.8rem}
+.logo-text{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:2px;color:var(--gold)}
+.logo-sub{font-size:.68rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase}
+.header-right{display:flex;align-items:center;gap:.8rem}
+.champion-badge{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#000;font-size:.7rem;font-weight:700;padding:4px 12px;border-radius:20px}
+.live-badge{background:var(--red);color:#fff;font-size:.65rem;font-weight:600;padding:3px 8px;border-radius:20px;letter-spacing:1px;animation:pulse 2s infinite}
+.admin-link{color:var(--muted);font-size:.8rem;text-decoration:none;padding:6px 14px;border:1px solid var(--border);border-radius:6px;transition:all .2s}
+.admin-link:hover{color:var(--gold);border-color:var(--gold)}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 2rem;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+nav::-webkit-scrollbar{display:none}
+.tab{padding:14px 18px;font-size:.82rem;font-weight:500;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap;user-select:none}
+.tab:hover{color:var(--text)}
+.tab.active{color:var(--gold);border-bottom-color:var(--gold)}
+main{max-width:1340px;margin:0 auto;padding:2rem}
+.panel{display:none}.panel.active{display:block}
+
+/* CARDS */
+.summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-bottom:2rem}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.2rem 1.4rem;transition:border-color .2s}
+.stat-card:hover{border-color:var(--gold)}
+.stat-card .label{font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:.5rem}
+.stat-card .value{font-family:'Bebas Neue',sans-serif;font-size:1.9rem;color:var(--gold);line-height:1}
+.stat-card .sub{font-size:.73rem;color:var(--muted);margin-top:.3rem}
+.section-head{display:flex;align-items:center;gap:10px;margin-bottom:1.2rem;margin-top:1.5rem}
+.section-head h2{font-family:'Bebas Neue',sans-serif;font-size:1.3rem;letter-spacing:1.5px}
+.section-head .line{flex:1;height:1px;background:var(--border)}
+
+/* TABLE */
+.table-wrap{overflow-x:auto;border-radius:var(--r);border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;font-size:.84rem}
+thead tr{background:var(--s2)}
+th{padding:11px 14px;text-align:left;font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;white-space:nowrap}
+td{padding:10px 14px;border-top:1px solid var(--border);white-space:nowrap}
+tbody tr{transition:background .15s}
+tbody tr:hover{background:var(--s2)}
+.badge{display:inline-block;padding:2px 8px;border-radius:4px;font-size:.68rem;font-weight:600}
+.ba{background:rgba(0,201,255,.15);color:var(--cyan)}
+.bb{background:rgba(240,165,0,.15);color:var(--gold)}
+.bw{background:rgba(34,197,94,.15);color:var(--green)}
+.bl{background:rgba(239,68,68,.1);color:var(--red)}
+.bsf{background:rgba(139,92,246,.15);color:var(--purple)}
+.bf{background:rgba(240,165,0,.2);color:var(--gold)}
+
+/* GRID LAYOUTS */
+.groups-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+.lb-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+.charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+.three-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.5rem}
+@media(max-width:768px){.groups-grid,.lb-grid,.charts-grid,.three-grid{grid-template-columns:1fr}}
+
+/* GROUP CARDS */
+.group-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+.group-head{background:var(--s2);padding:10px 16px;font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:2px}
+.group-head span{color:var(--gold)}
+
+/* LEADERBOARD */
+.lb-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
+.lb-head{background:var(--s2);padding:12px 16px;display:flex;align-items:center;gap:8px}
+.lb-head h3{font-family:'Bebas Neue',sans-serif;font-size:1rem;letter-spacing:1.5px}
+.lb-row{display:flex;align-items:center;padding:9px 16px;border-top:1px solid var(--border);gap:10px;cursor:pointer;transition:background .15s}
+.lb-row:hover{background:var(--s2)}
+.lb-pos{font-family:'DM Mono',monospace;font-size:.73rem;color:var(--muted);width:22px}
+.lb-pos.g{color:#fbbf24;font-weight:700}.lb-pos.s{color:#94a3b8;font-weight:700}.lb-pos.b{color:#b45309;font-weight:700}
+.lb-name{flex:1;font-size:.84rem;font-weight:500}
+.lb-team{font-size:.68rem;color:var(--muted)}
+.lb-stat{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;color:var(--gold)}
+.lb-bar{background:var(--border);border-radius:4px;height:4px;margin-top:3px}
+.lb-bar-inner{background:linear-gradient(90deg,var(--gold),var(--cyan));border-radius:4px;height:4px;transition:width .6s}
+.table-wrap::-webkit-scrollbar{height:6px}
+.table-wrap::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+
+@media (max-width: 768px) {
+  header { flex-direction: column; height: auto; padding: 1rem; align-items: flex-start; gap: 10px; }
+  .header-right { width: 100%; justify-content: space-between; }
+  nav { padding: 0 1rem; border-bottom: none; overflow-x: auto; white-space: nowrap; margin-bottom: 10px; }
+  .tab { padding: 10px 14px; font-size: 0.75rem; }
+  .summary-grid { grid-template-columns: 1fr 1fr; }
+  .groups-grid { grid-template-columns: 1fr; }
+  .charts-grid { grid-template-columns: 1fr; }
+  .lb-grid { grid-template-columns: 1fr; }
+  main { padding: 1rem; }
+  .modal { width: 95%; max-height: 90vh; }
+  .h2h-selectors { flex-direction: column; align-items: stretch; }
+  #tab-fantasy > div { grid-template-columns: 1fr !important; }
+}
+
+/* MATCH CARDS */
+.match-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.2rem 1.4rem;margin-bottom:.7rem;display:grid;grid-template-columns:130px 1fr 130px;align-items:center;gap:1rem;cursor:pointer;transition:border-color .2s}
+.match-card:hover{border-color:#2a3a5c}
+.match-card.final{border-color:var(--gold)}
+.match-card.semi{border-color:#7c3aed55}
+.match-vs{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;text-align:center;display:flex;align-items:center;justify-content:center;gap:12px}
+.match-vs .vs{color:var(--muted);font-size:.9rem}
+.match-result{font-size:.73rem;color:var(--muted);margin-top:4px;text-align:center}
+.match-score{font-family:'DM Mono',monospace;font-size:.72rem;color:var(--cyan);text-align:center;margin-top:2px}
+.match-date{font-family:'DM Mono',monospace;font-size:.75rem;color:var(--cyan)}
+.match-venue{font-size:.68rem;color:var(--muted);margin-top:3px}
+.match-meta{text-align:right}
+.mom{font-size:.71rem;color:var(--gold2)}
+
+/* CHARTS */
+.chart-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.4rem}
+.chart-card h3{font-family:'Bebas Neue',sans-serif;font-size:.95rem;letter-spacing:1.5px;margin-bottom:1rem}
+.chart-wrap{position:relative;height:240px}
+
+/* H2H */
+.h2h-selectors{display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap}
+.h2h-selectors select{background:var(--surface);border:1px solid var(--border);color:var(--text);padding:10px 14px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:.85rem;cursor:pointer}
+.h2h-selectors select:focus{outline:none;border-color:var(--gold)}
+.vs-div{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;color:var(--gold)}
+.btn{background:var(--gold);color:#000;border:none;padding:10px 24px;border-radius:8px;font-family:'DM Sans',sans-serif;font-weight:600;font-size:.85rem;cursor:pointer;transition:background .2s}
+.btn:hover{background:var(--gold2)}
+.btn-sm{padding:6px 14px;font-size:.75rem}
+.h2h-summary{display:grid;grid-template-columns:1fr auto 1fr;gap:1rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.4rem;margin-bottom:1.2rem}
+.h2h-team{text-align:center}
+.h2h-name{font-family:'Bebas Neue',sans-serif;font-size:1.5rem}
+.h2h-wins{font-family:'Bebas Neue',sans-serif;font-size:3rem;color:var(--gold);line-height:1}
+.h2h-center{text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center}
+
+/* LIVE */
+.live-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.4rem;margin-bottom:.8rem}
+.live-card.live-now{border-color:var(--red)}
+.dot-live{width:8px;height:8px;background:var(--red);border-radius:50%;animation:pulse 1.5s infinite;display:inline-block;margin-right:5px}
+
+/* OVERLAY / MODAL */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:200;align-items:center;justify-content:center;padding:1rem}
+.overlay.open{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:14px;width:100%;max-width:780px;max-height:90vh;overflow-y:auto}
+.modal-head{background:var(--s2);padding:1.3rem 1.6rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)}
+.modal-title{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:2px}
+.modal-sub{font-size:.73rem;color:var(--muted);margin-top:2px}
+.modal-close{background:none;border:none;color:var(--muted);font-size:1.4rem;cursor:pointer}
+.modal-close:hover{color:var(--text)}
+.modal-body{padding:1.4rem 1.6rem}
+.modal-tabs{display:flex;gap:4px;margin-bottom:1.2rem;border-bottom:1px solid var(--border)}
+.modal-tab{padding:9px 16px;font-size:.8rem;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;transition:all .2s}
+.modal-tab.active{color:var(--gold);border-bottom-color:var(--gold)}
+.modal-panel{display:none}.modal-panel.active{display:block}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:1rem}
+.info-item{background:var(--s2);border-radius:8px;padding:.8rem 1rem}
+.info-item .lbl{font-size:.63rem;color:var(--muted);text-transform:uppercase;letter-spacing:.8px}
+.info-item .val{font-size:.88rem;font-weight:500;margin-top:2px}
+.split-bar{display:flex;height:8px;border-radius:4px;overflow:hidden;margin-top:4px}
+.split-seg{height:8px;transition:width .5s}
+
+@keyframes growBar { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+.lb-bar-inner, .split-seg, .phase-seg { transform-origin: left; animation: growBar 1.2s cubic-bezier(0.1, 0.9, 0.2, 1) forwards; }
+
+/* TIMELINE */
+.timeline{position:relative;padding-left:20px}
+.timeline::before{content:'';position:absolute;left:6px;top:0;bottom:0;width:2px;background:var(--border)}
+.tl-item{position:relative;margin-bottom:.9rem}
+.tl-dot{position:absolute;left:-17px;top:10px;width:10px;height:10px;border-radius:50%;background:var(--border);border:2px solid var(--border)}
+.tl-dot.win{background:var(--green);border-color:var(--green)}
+.tl-dot.loss{background:var(--red);border-color:var(--red)}
+.tl-card{background:var(--s2);border-radius:8px;padding:.7rem 1rem}
+.tl-date{font-size:.68rem;color:var(--muted);font-family:'DM Mono',monospace}
+.tl-matchup{font-size:.86rem;font-weight:500;margin:2px 0}
+.tl-result.win{color:var(--green);font-size:.73rem}
+.tl-result.loss{color:var(--red);font-size:.73rem}
+
+/* MISC */
+.loading{text-align:center;padding:3rem;color:var(--muted);font-size:.88rem}
+.empty{text-align:center;padding:2rem;color:var(--muted);font-size:.83rem}
+.text-gold{color:var(--gold)}.text-green{color:var(--green)}.text-red{color:var(--red)}
+.text-cyan{color:var(--cyan)}.text-muted{color:var(--muted)}.text-purple{color:var(--purple)}
+.mono{font-family:'DM Mono',monospace}
+.flag{font-size:1.2rem}
+.clickable{cursor:pointer}
+.clickable:hover .hl{color:var(--gold)}
+
+/* PHASE CHART */
+.phase-bar-row{margin-bottom:.8rem}
+.phase-label{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px;display:flex;justify-content:space-between}
+.phase-bars{display:flex;gap:4px;height:20px}
+.phase-seg{border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:600;transition:width .5s}
+
+/* INNINGS TABLE */
+.inn-table{background:var(--s2);border-radius:8px;padding:1rem;margin-bottom:1rem}
+.inn-title{font-family:'Bebas Neue',sans-serif;font-size:.95rem;letter-spacing:1.5px;color:var(--text);margin-bottom:.8rem}
+.inn-phases{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.6rem;margin-bottom:.6rem}
+.phase-box{background:var(--surface);border-radius:6px;padding:.6rem;text-align:center}
+.phase-box .ph-label{font-size:.6rem;color:var(--muted);text-transform:uppercase}
+.phase-box .ph-val{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;color:var(--text)}
+.phase-box .ph-sub{font-size:.6rem;color:var(--muted)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <span class="logo-icon">🏆</span>
+    <div>
+      <div class="logo-text">Champions Trophy 2025</div>
+      <div class="logo-sub">ICC Analytics Dashboard</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div style="display:flex;align-items:center;background:var(--s2);border-radius:20px;padding:4px 12px;border:1px solid var(--border);margin-right:1rem;position:relative">
+      <input type="text" id="topSearchInput" placeholder="Search (Trie + Rabin-Karp)..." style="background:transparent;border:none;color:var(--text);font-size:.8rem;outline:none;width:160px" onkeyup="loadDaaAutocomplete()">
+      <button onclick="loadDaaSearchTop()" style="background:none;border:none;color:var(--muted);cursor:pointer">🔍</button>
+      <div id="topSearchResults" style="position:absolute;top:120%;left:0;right:0;background:var(--surface);border:1px solid var(--border);border-radius:8px;max-height:300px;overflow-y:auto;display:none;z-index:200;box-shadow:0 10px 25px rgba(0,0,0,0.5)"></div>
+    </div>
+    <span class="live-badge" id="headerLiveBadge" style="display:none">● LIVE</span>
+    <button onclick="downloadPDF()" class="admin-link" style="color:var(--gold);border-color:var(--gold);background:none;cursor:pointer">📄 PDF Report</button>
+    <a href="/admin" class="admin-link">⚙ Admin</a>
+  </div>
+</header>
+
+<nav>
+  <div class="tab active" data-tab="overview">Overview</div>
+  <div class="tab" data-tab="standings">Standings</div>
+  <div class="tab" data-tab="matches">Matches</div>
+  <div class="tab" data-tab="players">Players</div>
+  <div class="tab" data-tab="analytics">Analytics</div>
+  <div class="tab" data-tab="phase">Phase Analysis</div>
+  <div class="tab" data-tab="grounds">Grounds</div>
+  <div class="tab" data-tab="partnerships">Partnerships</div>
+  <div class="tab" data-tab="live">Live</div>
+  <div class="tab" data-tab="fantasy">Fantasy Team</div>
+</nav>
+
+<main>
+
+<!-- OVERVIEW -->
+<div class="panel active" id="tab-overview">
+  <div class="summary-grid" id="summaryCards"><div class="stat-card"><div class="label">Loading...</div></div></div>
+  <div class="section-head"><h2>Group Standings</h2><div class="line"></div></div>
+  <div class="groups-grid" id="groupsGrid"><div class="loading">Loading...</div></div>
+  <div class="section-head"><h2>Top Performers</h2><div class="line"></div></div>
+  <div class="lb-grid" id="overviewLeaders"><div class="loading">Loading...</div></div>
+</div>
+
+<!-- STANDINGS -->
+<div class="panel" id="tab-standings">
+  <div class="section-head"><h2>Full Points Table</h2><div class="line"></div></div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>#</th><th>Team</th><th>Group</th><th>P</th><th>W</th><th>L</th><th>NR</th><th>Captain</th><th>Coach</th><th>Wicket Keeper</th></tr></thead>
+      <tbody id="standingsTbody"><tr><td colspan="10" class="loading">Loading...</td></tr></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- MATCHES -->
+<div class="panel" id="tab-matches">
+  <div class="section-head"><h2>Head-to-Head Comparison</h2><div class="line"></div></div>
+  <div class="h2h-selectors" style="margin-bottom:10px">
+    <select id="h2hT1"></select>
+    <span class="vs-div">VS</span>
+    <select id="h2hT2"></select>
+    <button class="btn" onclick="loadH2H()">Compare</button>
+  </div>
+  <div id="h2hSummary"></div>
+  <div id="h2hResult" style="margin-bottom:30px"></div>
+
+  <div class="section-head"><h2>All 15 Matches</h2><div class="line"></div><span style="font-size:.73rem;color:var(--muted)">Click any match for deep analysis</span></div>
+  <div id="matchesList"><div class="loading">Loading...</div></div>
+</div>
+
+<!-- PLAYERS -->
+<div class="panel" id="tab-players">
+  <div class="lb-grid" id="playersLeaders"><div class="loading">Loading...</div></div>
+  <div class="section-head" style="display:flex;justify-content:space-between;align-items:flex-end">
+    <div><h2>Full Player Stats</h2><div class="line"></div><span style="font-size:.73rem;color:var(--muted)">Click any player for profile</span></div>
+    <div>
+      <button class="btn btn-sm" onclick="loadDaaImpactSort()" style="background:var(--s2);color:var(--green);border:1px solid var(--green)">Sort by Impact (Merge Sort)</button>
+      <button class="btn btn-sm" onclick="loadPlayers()" style="background:var(--s2);color:var(--muted);border:1px solid var(--border);margin-left:5px">Reset</button>
+    </div>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>#</th><th>Player</th><th>Team</th><th>Role</th><th>Style</th><th>Runs</th><th>Avg</th><th>SR</th><th>50s</th><th>100s</th><th>HS</th><th>Wkts</th><th>Econ</th><th>Best</th></tr></thead>
+      <tbody id="playersTbody"><tr><td colspan="14" class="loading">Loading...</td></tr></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ANALYTICS -->
+<div class="panel" id="tab-analytics">
+  <div class="section-head"><h2>Tournament Analytics</h2><div class="line"></div></div>
+  <div class="charts-grid">
+    <div class="chart-card"><h3>🪙 Toss — Bat First Impact</h3><div class="chart-wrap"><canvas id="tossBatChart"></canvas></div></div>
+    <div class="chart-card"><h3>🪙 Toss — Field First Impact</h3><div class="chart-wrap"><canvas id="tossFieldChart"></canvas></div></div>
+    <div class="chart-card"><h3>🏏 Top 8 Run Scorers</h3><div class="chart-wrap"><canvas id="runScorerChart"></canvas></div></div>
+    <div class="chart-card"><h3>🎯 Top 8 Wicket Takers</h3><div class="chart-wrap"><canvas id="wicketChart"></canvas></div></div>
+  </div>
+  <div class="section-head"><h2>Wicket Type Breakdown</h2><div class="line"></div></div>
+  <div class="charts-grid">
+    <div class="chart-card"><h3>💥 How Wickets Fall</h3><div class="chart-wrap"><canvas id="wicketTypeChart"></canvas></div></div>
+    <div class="chart-card"><h3>🎯 Wickets vs LH vs RH Batters</h3><div class="chart-wrap"><canvas id="handednessChart"></canvas></div></div>
+  </div>
+</div>
+
+<!-- PHASE ANALYSIS -->
+<div class="panel" id="tab-phase">
+  <div class="section-head"><h2>Phase Analysis — Batting</h2><div class="line"></div><span style="font-size:.73rem;color:var(--muted)">Powerplay (1-10) · Middle (11-40) · Death (41-50)</span></div>
+  <div class="table-wrap" style="margin-bottom:1.5rem">
+    <table>
+      <thead><tr><th>Player</th><th>Team</th><th>PP Runs</th><th>PP SR</th><th>Mid Runs</th><th>Mid SR</th><th>Death Runs</th><th>Death SR</th><th>Total</th></tr></thead>
+      <tbody id="phaseBatTbody"><tr><td colspan="9" class="loading">Loading...</td></tr></tbody>
+    </table>
+  </div>
+  <div class="section-head"><h2>Phase Analysis — Bowling</h2><div class="line"></div></div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Bowler</th><th>Team</th><th>PP Wkts</th><th>PP Econ</th><th>Death Wkts</th><th>Death Econ</th><th>Wkt:Bowled</th><th>Wkt:Caught</th><th>Wkt:LBW</th><th>Total Wkts</th></tr></thead>
+      <tbody id="phaseBowlTbody"><tr><td colspan="10" class="loading">Loading...</td></tr></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- GROUNDS -->
+<div class="panel" id="tab-grounds">
+  <div class="section-head"><h2>Ground Analysis</h2><div class="line"></div></div>
+  <div id="groundsGrid"><div class="loading">Loading...</div></div>
+  <div class="section-head"><h2>Venue Details</h2><div class="line"></div></div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Stadium</th><th>City</th><th>Country</th><th>Capacity</th><th>Ends</th><th>Pitch Type</th></tr></thead>
+      <tbody id="stadiumsTbody"><tr><td colspan="6" class="loading">Loading...</td></tr></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- PARTNERSHIPS -->
+<div class="panel" id="tab-partnerships">
+  <div class="section-head"><h2>Player Network (BFS Degrees of Separation)</h2><div class="line"></div><span style="font-size:.73rem;color:var(--muted)">Shortest path between players based on batting partnerships</span></div>
+  <div style="background:var(--s2);padding:1rem;border-radius:8px;margin-bottom:1.5rem;display:flex;align-items:center;gap:15px">
+    <div style="flex:1;position:relative">
+      <input type="text" id="bfsP1" placeholder="Search Player 1 (e.g. Virat)" style="width:100%;background:var(--surface);border:1px solid var(--border);color:white;padding:8px;border-radius:4px" onkeyup="loadBfsAutocomplete('bfsP1')" onfocus="loadBfsAutocomplete('bfsP1')" autocomplete="off">
+      <div id="bfsP1_results" style="position:absolute;top:100%;left:0;right:0;background:var(--surface);border:1px solid var(--border);border-radius:4px;max-height:200px;overflow-y:auto;display:none;z-index:10;box-shadow:0 5px 15px rgba(0,0,0,0.5)"></div>
+    </div>
+    <span style="color:var(--cyan);font-weight:bold">➔</span>
+    <div style="flex:1;position:relative">
+      <input type="text" id="bfsP2" placeholder="Search Player 2 (e.g. Rashid)" style="width:100%;background:var(--surface);border:1px solid var(--border);color:white;padding:8px;border-radius:4px" onkeyup="loadBfsAutocomplete('bfsP2')" onfocus="loadBfsAutocomplete('bfsP2')" autocomplete="off">
+      <div id="bfsP2_results" style="position:absolute;top:100%;left:0;right:0;background:var(--surface);border:1px solid var(--border);border-radius:4px;max-height:200px;overflow-y:auto;display:none;z-index:10;box-shadow:0 5px 15px rgba(0,0,0,0.5)"></div>
+    </div>
+    <button class="btn" onclick="loadBFSPath()" style="background:var(--cyan);color:black;border:none">Find Connection</button>
+  </div>
+  <div id="bfsResult" style="margin-bottom:2rem"></div>
+
+  <div class="section-head"><h2>Best Batting Partnerships</h2><div class="line"></div></div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>#</th><th>Partnership</th><th>Team</th><th>Runs</th><th>Balls</th><th>Run Rate</th><th>Match</th><th>Stage</th></tr></thead>
+      <tbody id="partTbody"><tr><td colspan="8" class="loading">Loading...</td></tr></tbody>
+    </table>
+  </div>
+</div>
+
+
+
+<!-- LIVE -->
+<div class="panel" id="tab-live">
+  <div class="section-head"><h2>Live &amp; Current Matches</h2><div class="line"></div><span style="font-size:.73rem;color:var(--muted)">Cricbuzz API · refreshes auto</span></div>
+  <div id="liveContent"><div class="loading">Fetching live data...</div></div>
+</div>
+
+<!-- FANTASY TEAM -->
+<div class="panel" id="tab-fantasy">
+  <div class="section-head"><h2>Squad Builder</h2><div class="line"></div><span style="font-size:.73rem;color:var(--muted)">Constrained DP Optimization</span></div>
+  
+  <div style="display:grid;grid-template-columns:1fr 340px;gap:20px;align-items:start">
+    <!-- Left: Squad Pitch -->
+    <div>
+      <div style="background:var(--s2);padding:1rem;border-radius:8px;border:1px solid var(--border);margin-bottom:1rem">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px">
+          <div>
+            <div style="font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px">Remaining Budget</div>
+            <div style="font-family:Bebas Neue,sans-serif;font-size:2rem;color:var(--gold)"><span id="squadBudget">100.0</span> <span style="font-size:1rem">Cr</span></div>
+          </div>
+          <div>
+            <div style="font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;text-align:right">Total Value</div>
+            <div style="font-family:Bebas Neue,sans-serif;font-size:2rem;color:var(--cyan)"><span id="squadValue">0</span> <span style="font-size:1rem">Pts</span></div>
+          </div>
+          <button class="btn" onclick="autoFillSquad()" style="background:var(--green);border-color:var(--green)">Auto-Fill Squad ✨</button>
+        </div>
+        
+        <div class="squad-roles" style="display:flex;gap:15px;margin-bottom:10px">
+          <div class="role-counter" id="rc-Batter">Batters: 0/5</div>
+          <div class="role-counter" id="rc-Bowler">Bowlers: 0/5</div>
+          <div class="role-counter" id="rc-WKAR">AR/WK: 0/1</div>
+        </div>
+        
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Role</th><th>Player</th><th>Cost</th><th>Value</th><th></th></tr></thead>
+            <tbody id="squadTbody">
+              <!-- Empty slots or selected players -->
+            </tbody>
+          </table>
+        </div>
+        <div style="text-align:right;margin-top:10px">
+          <button class="btn btn-sm" onclick="resetSquad()" style="background:transparent;color:var(--red);border-color:var(--red)">Reset Squad</button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Right: Player Pool -->
+    <div>
+      <div style="background:var(--s2);padding:1rem;border-radius:8px;border:1px solid var(--border);height:600px;display:flex;flex-direction:column">
+        <div style="margin-bottom:10px">
+          <input type="text" id="poolSearch" placeholder="Search players..." style="width:100%;background:var(--surface);border:1px solid var(--border);color:white;padding:8px;border-radius:4px" onkeyup="renderPool()">
+        </div>
+        <div style="display:flex;gap:5px;margin-bottom:10px">
+          <button class="btn btn-sm pool-filter active" onclick="setPoolFilter('All')">All</button>
+          <button class="btn btn-sm pool-filter" onclick="setPoolFilter('Batter')">BAT</button>
+          <button class="btn btn-sm pool-filter" onclick="setPoolFilter('Bowler')">BOWL</button>
+          <button class="btn btn-sm pool-filter" onclick="setPoolFilter('WKAR')">AR/WK</button>
+        </div>
+        <div id="poolList" style="flex:1;overflow-y:auto;padding-right:5px;display:flex;flex-direction:column;gap:8px">
+          <!-- Pool players -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</main>
+
+<!-- TEAM MODAL -->
+<div class="overlay" id="teamModal">
+  <div class="modal">
+    <div class="modal-head">
+      <div><div class="modal-title" id="modalTeamTitle">Team</div><div class="modal-sub" id="modalTeamSub"></div></div>
+      <button class="modal-close" onclick="closeModal('teamModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-tabs">
+        <div class="modal-tab active" onclick="switchTab(this,'mInfo')">Info</div>
+        <div class="modal-tab" onclick="switchTab(this,'mSquad')">Squad</div>
+        <div class="modal-tab" onclick="switchTab(this,'mJourney')">Journey</div>
+      </div>
+      <div class="modal-panel active" id="mInfo"></div>
+      <div class="modal-panel" id="mSquad"></div>
+      <div class="modal-panel" id="mJourney"></div>
+    </div>
+  </div>
+</div>
+
+<!-- MATCH MODAL -->
+<div class="overlay" id="matchModal">
+  <div class="modal">
+    <div class="modal-head">
+      <div><div class="modal-title" id="modalMatchTitle">Match</div><div class="modal-sub" id="modalMatchSub"></div></div>
+      <button class="modal-close" onclick="closeModal('matchModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-tabs">
+        <div class="modal-tab active" onclick="switchTab(this,'mmOverview')">Overview</div>
+        <div class="modal-tab" onclick="switchTab(this,'mmInnings')">Innings</div>
+        <div class="modal-tab" onclick="switchTab(this,'mmPerformers')">Performers</div>
+        <div class="modal-tab" onclick="switchTab(this,'mmPartnerships')">Partnerships</div>
+      </div>
+      <div class="modal-panel active" id="mmOverview"></div>
+      <div class="modal-panel" id="mmInnings"></div>
+      <div class="modal-panel" id="mmPerformers"></div>
+      <div class="modal-panel" id="mmPartnerships"></div>
+    </div>
+  </div>
+</div>
+
+<!-- PLAYER MODAL -->
+<div class="overlay" id="playerModal">
+  <div class="modal">
+    <div class="modal-head">
+      <div><div class="modal-title" id="modalPlayerTitle">Player</div><div class="modal-sub" id="modalPlayerSub"></div></div>
+      <button class="modal-close" onclick="closeModal('playerModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-tabs">
+        <div class="modal-tab active" onclick="switchTab(this,'pmStats')">Stats</div>
+        <div class="modal-tab" onclick="switchTab(this,'pmPhase')">Phase Splits</div>
+        <div class="modal-tab" onclick="switchTab(this,'pmForm')">Match Form</div>
+        <div class="modal-tab" onclick="switchTab(this,'pmBowling')">Bowling</div>
+      </div>
+      <div class="modal-panel active" id="pmStats"></div>
+      <div class="modal-panel" id="pmPhase"></div>
+      <div class="modal-panel" id="pmForm"></div>
+      <div class="modal-panel" id="pmBowling"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const FLAGS={India:'🇮🇳',Pakistan:'🇵🇰',Australia:'🇦🇺',England:'🏴󠁧󠁢󠁥󠁮󠁧󠁿','New Zealand':'🇳🇿','South Africa':'🇿🇦',Bangladesh:'🇧🇩',Afghanistan:'🇦🇫'};
+const f=n=>FLAGS[n]||'🏳';
+
+// ── TAB SYSTEM ──────────────────────────────────────────────────────────────
+document.querySelectorAll('.tab').forEach(t=>{
+  t.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById('tab-'+t.dataset.tab).classList.add('active');
+    const lazy={analytics:loadAnalytics,phase:loadPhase,grounds:loadGrounds,
+                partnerships:loadPartnerships,live:loadLive,
+                standings:loadStandings,matches:()=>{loadMatches();initH2H();},players:loadPlayers,fantasy:loadFantasy};
+    const key=t.dataset.tab;
+    if(lazy[key]&&!window['_'+key+'Loaded']){lazy[key]();window['_'+key+'Loaded']=true;}
+  });
+});
+
+function switchTab(el,panelId){
+  const tabs=el.parentElement.querySelectorAll('.modal-tab');
+  const panels=el.closest('.modal-body').querySelectorAll('.modal-panel');
+  tabs.forEach(t=>t.classList.remove('active'));
+  panels.forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById(panelId).classList.add('active');
+}
+
+// ── ANIMATIONS ───────────────────────────────────────────────────────────────
+function animateNumbers(){
+  document.querySelectorAll('.animate-num').forEach(el=>{
+    if(el.dataset.animated)return;
+    el.dataset.animated='true';
+    const target=parseFloat(el.dataset.target);
+    if(isNaN(target))return;
+    const isInt=target%1===0;
+    const start=performance.now();
+    const update=t=>{
+      let p=(t-start)/1200;if(p>1)p=1;
+      const ease=1-Math.pow(1-p,3);
+      const val=target*ease;
+      el.textContent=isInt?Math.floor(val).toLocaleString():val.toFixed(1);
+      if(p<1)requestAnimationFrame(update);
+      else el.textContent=isInt?target.toLocaleString():target.toFixed(1);
+    };
+    requestAnimationFrame(update);
+  });
+}
+
+// ── API ──────────────────────────────────────────────────────────────────────
+const api=url=>fetch(url).then(r=>r.json());
+
+// ── OVERVIEW ─────────────────────────────────────────────────────────────────
+async function loadOverview(){
+  const[sum,standings,bat,bowl]=await Promise.all([
+    api('/api/summary'),api('/api/standings'),
+    api('/api/top_batters'),api('/api/top_bowlers')
+  ]);
+  document.getElementById('summaryCards').innerHTML=[
+    {label:'Total Matches',   raw:sum.total_matches,            sub:'Group + KO'},
+    {label:'Total Runs',      raw:sum.total_runs||0,            sub:'Across all teams'},
+    {label:'Total Wickets',   raw:sum.total_wickets,            sub:'All bowlers'},
+    {label:'Total Sixes',     raw:sum.total_sixes||0,           sub:'Hit for six'},
+    {label:'Top Scorer',      raw:sum.top_scorer?.no_of_totalruns||0, sub:sum.top_scorer?.player_name||''},
+    {label:'Top Wicket Taker',raw:sum.top_bowler?.no_of_wickets||0,  sub:sum.top_bowler?.player_name||''},
+    {label:'Best Partnership',raw:sum.highest_partnership||0,   sub:'Runs - single stand'},
+    {label:'Champion 🏆',     value:sum.champion||'TBD',        sub:'ICC CT 2025',big:true}
+  ].map(c=>`<div class="stat-card"><div class="label">${c.label}</div>
+    <div class="${c.value?'value':'value animate-num'}" data-target="${c.raw||0}" style="${c.big?'font-size:1.1rem;color:var(--gold2)':''}">${c.value||'0'}</div>
+    <div class="sub">${c.sub}</div></div>`).join('');
+
+  const grpA=standings.filter(t=>t.group_name==='A');
+  const grpB=standings.filter(t=>t.group_name==='B');
+  document.getElementById('groupsGrid').innerHTML=['A','B'].map((g,i)=>{
+    const teams=[grpA,grpB][i];
+    return`<div class="group-card"><div class="group-head">Group <span>${g}</span></div>
+      <table style="width:100%"><thead><tr><th>Team</th><th>P</th><th>W</th><th>L</th><th>NR</th></tr></thead>
+      <tbody>${teams.map(t=>`<tr>
+        <td><span class="flag">${f(t.team_name)}</span> <span class="clickable" onclick="openTeamModal('${t.team_name}','${t.team_id}')"><span class="hl">${t.team_name}</span></span></td>
+        <td>${t.total_matches}</td><td class="text-green">${t.no_of_wins}</td>
+        <td class="text-red">${t.no_of_loses}</td><td class="text-muted">${t.no_of_no_results}</td>
+      </tr>`).join('')}</tbody></table></div>`;
+  }).join('');
+  document.getElementById('overviewLeaders').innerHTML=buildLeaderboards(bat,bowl);
+  animateNumbers();
+}
+
+function buildLeaderboards(bat,bowl){
+  const maxR=bat[0]?.runs||1,maxW=bowl[0]?.wickets||1;
+  const pos=i=>i===0?'g':i===1?'s':i===2?'b':'';
+  return`<div class="lb-card"><div class="lb-head"><span>🏏</span><h3>Top Run Scorers</h3></div>
+    ${bat.slice(0,8).map((p,i)=>`<div class="lb-row" onclick="openPlayerModal('${getPlayerId(p.player_name)}')">
+      <div class="lb-pos ${pos(i)}">${i+1}</div>
+      <div style="flex:1"><div style="display:flex;align-items:center;justify-content:space-between">
+        <div><div class="lb-name">${p.player_name}</div><div class="lb-team">${f(p.country_name)} ${p.country_name} · Avg:${p.avg} SR:${p.sr}</div></div>
+        <div class="lb-stat animate-num" data-target="${p.runs}">0</div></div>
+      <div class="lb-bar"><div class="lb-bar-inner" style="width:${(p.runs/maxR*100).toFixed(0)}%"></div></div>
+      </div></div>`).join('')}</div>
+  <div class="lb-card"><div class="lb-head"><span>🎯</span><h3>Top Wicket Takers</h3></div>
+    ${bowl.slice(0,8).map((p,i)=>`<div class="lb-row" onclick="openPlayerModal('${getPlayerId(p.player_name)}')">
+      <div class="lb-pos ${pos(i)}">${i+1}</div>
+      <div style="flex:1"><div style="display:flex;align-items:center;justify-content:space-between">
+        <div><div class="lb-name">${p.player_name}</div><div class="lb-team">${f(p.country_name)} ${p.country_name} · Econ:${p.economy} Best:${p.best_bowling}</div></div>
+        <div class="lb-stat animate-num" data-target="${p.wickets}">0</div></div>
+      <div class="lb-bar"><div class="lb-bar-inner" style="width:${(p.wickets/maxW*100).toFixed(0)}%"></div></div>
+      </div></div>`).join('')}</div>`;
+}
+
+function getPlayerId(name){
+  const map={'Virat Kohli':'IND02','Rohit Sharma':'IND01','Shubman Gill':'IND03',
+    'Babar Azam':'PAK01','Rashid Khan':'AFG01','Jasprit Bumrah':'IND08',
+    'Kuldeep Yadav':'IND07','Kagiso Rabada':'SA03','Shaheen Shah Afridi':'PAK04',
+    'Trent Boult':'NZ03','Mitchell Starc':'AUS05','Pat Cummins':'AUS04'};
+  return map[name]||'';
+}
+
+// ── STANDINGS ──────────────────────────────────────────────────────────────
+async function loadStandings(){
+  const data=await api('/api/standings');
+  document.getElementById('standingsTbody').innerHTML=data.map((t,i)=>`<tr>
+    <td style="color:var(--muted);font-size:.73rem">${i+1}</td>
+    <td><span class="clickable" onclick="openTeamModal('${t.team_name}','${t.team_id}')">
+      ${f(t.team_name)} <span class="hl">${t.team_name}</span></span></td>
+    <td><span class="badge ${t.group_name==='A'?'ba':'bb'}">Group ${t.group_name}</span></td>
+    <td>${t.total_matches}</td><td class="text-green">${t.no_of_wins}</td>
+    <td class="text-red">${t.no_of_loses}</td><td class="text-muted">${t.no_of_no_results}</td>
+    <td>${t.captain}</td><td style="font-size:.78rem;color:var(--muted)">${t.coach}</td>
+    <td style="font-size:.78rem;color:var(--cyan)">†${t.wicket_keeper}</td>
+  </tr>`).join('');
+}
+
+// ── MATCHES ──────────────────────────────────────────────────────────────────
+async function loadMatches(){
+  const data=await api('/api/matches');
+  document.getElementById('matchesList').innerHTML=data.map(m=>{
+    const sc=m.match_stage==='Final'?'final':m.match_stage==='Semi Final'?'semi':'';
+    const sb=m.match_stage==='Final'?`<span class="badge bf">🏆 Final</span>`:
+             m.match_stage==='Semi Final'?`<span class="badge bsf">⚔ Semi</span>`:
+             `<span style="font-size:.68rem;color:var(--muted)">Group</span>`;
+    return`<div class="match-card ${sc}" onclick="openMatchModal('${m.match_id}')">
+      <div>${sb}<div class="match-date">${m.match_date}</div><div class="match-venue">${m.stadium_name||''}</div></div>
+      <div>
+        <div class="match-vs"><span>${f(m.team_1_name)} ${m.team_1_name}</span><span class="vs">vs</span><span>${f(m.team_2_name)} ${m.team_2_name}</span></div>
+        <div class="match-score">${m.team_1_score||'—'} | ${m.team_2_score||'—'}</div>
+        <div class="match-result">${m.winner?`<span class="text-green">${f(m.winner)} ${m.winner}</span> won by ${m.win_margin}`:'<span class="text-muted">Result pending</span>'}</div>
+        ${m.toss_winner?`<div style="font-size:.67rem;color:var(--muted);margin-top:2px">🪙 ${m.toss_winner} chose to ${m.toss_decision}</div>`:''}
+      </div>
+      <div class="match-meta">${m.man_of_the_match?`<div class="mom">⭐ ${m.man_of_the_match}</div><div style="font-size:.63rem;color:var(--muted)">MoM</div>`:''}
+        ${m.match_notes?`<div style="font-size:.65rem;color:var(--muted);margin-top:4px;text-align:right">${m.match_notes}</div>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── PLAYERS ──────────────────────────────────────────────────────────────────
+async function loadPlayers(){
+  const[bat,bowl]=await Promise.all([api('/api/top_batters'),api('/api/top_bowlers')]);
+  document.getElementById('playersLeaders').innerHTML=buildLeaderboards(bat,bowl);
+  animateNumbers();
+  const teams=await api('/api/teams');
+  let all=[];
+  for(const t of teams){
+    const pl=await api(`/api/team_players/${t.team_id}`);
+    all=all.concat(pl);
+  }
+  all.sort((a,b)=>b.no_of_totalruns-a.no_of_totalruns);
+  document.getElementById('playersTbody').innerHTML=all.map((p,i)=>`<tr class="clickable" onclick="openPlayerModal('${p.player_id}')">
+    <td style="color:var(--muted);font-size:.73rem">${i+1}</td>
+    <td class="hl">${p.player_name}</td>
+    <td>${f(p.country_name)} ${p.country_name}</td>
+    <td style="font-size:.75rem;color:var(--purple)">${p.player_role||'—'}</td>
+    <td style="font-size:.73rem;color:var(--muted)">${p.batting_style||'—'}</td>
+    <td class="text-gold">${p.no_of_totalruns}</td>
+    <td>${p.batting_average}</td><td>${p.strike_rate}</td>
+    <td>${p.no_of_50s}</td><td>${p.no_of_100s}</td><td>${p.highest_score}</td>
+    <td class="text-cyan">${p.no_of_wickets}</td>
+    <td>${p.no_of_wickets>0?p.economy:'—'}</td>
+    <td style="font-size:.75rem">${p.best_bowling!='0/0'?p.best_bowling:'—'}</td>
+  </tr>`).join('');
+}
+
+// ── ANALYTICS ───────────────────────────────────────────────────────────────
+async function loadAnalytics(){
+  const[toss,bat,bowl]=await Promise.all([api('/api/toss_impact'),api('/api/top_batters'),api('/api/top_bowlers')]);
+  const dOpts={animation:{duration:1500,easing:'easeOutBounce'},plugins:{legend:{labels:{color:'#94a3b8',font:{family:'DM Sans'}}}}};
+  const bOpts={plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#64748b'},grid:{color:'#1e2d4a'}},y:{ticks:{color:'#64748b'},grid:{color:'#1e2d4a'}}}};
+  const bat_r=toss.find(t=>t.toss_decision==='Bat')||{toss_winner_won:0,toss_winner_lost:0};
+  const fld_r=toss.find(t=>t.toss_decision==='Field')||{toss_winner_won:0,toss_winner_lost:0};
+  new Chart(document.getElementById('tossBatChart'),{type:'doughnut',data:{labels:['Won','Lost'],datasets:[{data:[bat_r.toss_winner_won,bat_r.toss_winner_lost],backgroundColor:['#22c55e','#ef4444'],borderWidth:0}]},options:dOpts});
+  new Chart(document.getElementById('tossFieldChart'),{type:'doughnut',data:{labels:['Won','Lost'],datasets:[{data:[fld_r.toss_winner_won,fld_r.toss_winner_lost],backgroundColor:['#00c9ff','#f0a500'],borderWidth:0}]},options:dOpts});
+  new Chart(document.getElementById('runScorerChart'),{type:'bar',data:{labels:bat.slice(0,8).map(p=>p.player_name.split(' ').pop()),datasets:[{data:bat.slice(0,8).map(p=>p.runs),backgroundColor:bat.slice(0,8).map((_,i)=>`hsla(${38-i*3},95%,${60-i*3}%,.85)`),borderRadius:5}]},options:bOpts});
+  new Chart(document.getElementById('wicketChart'),{type:'bar',data:{labels:bowl.slice(0,8).map(p=>p.player_name.split(' ').pop()),datasets:[{data:bowl.slice(0,8).map(p=>p.wickets),backgroundColor:bowl.slice(0,8).map((_,i)=>`hsla(${192-i*5},100%,${55-i*2}%,.85)`),borderRadius:5}]},options:bOpts});
+  // Wicket types
+  const totBowled=bowl.reduce((s,p)=>s+(p.wkt_bowled||0),0);
+  const totCaught=bowl.reduce((s,p)=>s+(p.wkt_caught||0),0);
+  const totLbw=bowl.reduce((s,p)=>s+(p.wkt_lbw||0),0);
+  new Chart(document.getElementById('wicketTypeChart'),{type:'doughnut',data:{labels:['Bowled','Caught','LBW'],datasets:[{data:[totBowled,totCaught,totLbw],backgroundColor:['#f0a500','#00c9ff','#a78bfa'],borderWidth:0}]},options:dOpts});
+  const totRH=bowl.reduce((s,p)=>s+(p.wkts_vs_rh||0),0);
+  const totLH=bowl.reduce((s,p)=>s+(p.wkts_vs_lh||0),0);
+  new Chart(document.getElementById('handednessChart'),{type:'doughnut',data:{labels:['vs Right-Handed','vs Left-Handed'],datasets:[{data:[totRH,totLH],backgroundColor:['#22c55e','#ef4444'],borderWidth:0}]},options:dOpts});
+}
+
+// ── PHASE ───────────────────────────────────────────────────────────────────
+async function loadPhase(){
+  const data=await api('/api/phase_stats');
+  document.getElementById('phaseBatTbody').innerHTML=data.map(p=>`<tr>
+    <td>${p.player_name}</td><td>${f(p.country_name)} ${p.country_name}</td>
+    <td class="text-cyan">${p.pp_runs||0}</td><td>${p.pp_sr||0}</td>
+    <td class="text-gold">${p.mid_runs||0}</td><td>${p.mid_sr||0}</td>
+    <td class="text-green">${p.death_runs||0}</td><td>${p.death_sr||0}</td>
+    <td style="font-weight:600;min-width:120px">
+      <div style="margin-bottom:4px">${p.total_runs}</div>
+      <div style="display:flex;height:5px;border-radius:3px;overflow:hidden;background:var(--s2);width:100%" title="Phase Split: Green(PP) | Yellow(Mid) | Red(Death)">
+        <div style="width:${p.total_runs>0?(p.pp_runs/p.total_runs)*100:0}%;background:var(--green)"></div>
+        <div style="width:${p.total_runs>0?(p.mid_runs/p.total_runs)*100:0}%;background:var(--gold)"></div>
+        <div style="width:${p.total_runs>0?(p.death_runs/p.total_runs)*100:0}%;background:var(--red)"></div>
+      </div>
+    </td>
+  </tr>`).join('');
+  const bowl=await api('/api/top_bowlers');
+  document.getElementById('phaseBowlTbody').innerHTML=bowl.map(p=>`<tr>
+    <td>${p.player_name}</td><td>${f(p.country_name)} ${p.country_name}</td>
+    <td class="text-cyan">${p.wkt_bowled||0}</td>
+    <td>${p.economy>0?((p.wkt_bowled||0)*6/Math.max(1,p.wickets)).toFixed(1):'—'}</td>
+    <td class="text-green">${p.wkt_caught||0}</td>
+    <td>${p.economy}</td>
+    <td>${p.wkt_bowled||0}</td><td>${p.wkt_caught||0}</td><td>${p.wkt_lbw||0}</td>
+    <td style="font-weight:600;color:var(--gold);min-width:120px">
+      <div style="margin-bottom:4px">${p.wickets}</div>
+      <div style="display:flex;height:5px;border-radius:3px;overflow:hidden;background:var(--s2);width:100%" title="Wicket Type Split: Green(Bowled) | Yellow(Caught) | Red(LBW)">
+        <div style="width:${p.wickets>0?((p.wkt_bowled||0)/p.wickets)*100:0}%;background:var(--green)"></div>
+        <div style="width:${p.wickets>0?((p.wkt_caught||0)/p.wickets)*100:0}%;background:var(--gold)"></div>
+        <div style="width:${p.wickets>0?((p.wkt_lbw||0)/p.wickets)*100:0}%;background:var(--red)"></div>
+      </div>
+    </td>
+  </tr>`).join('');
+}
+
+// ── GROUNDS ─────────────────────────────────────────────────────────────────
+async function loadGrounds(){
+  const[gs,st]=await Promise.all([api('/api/ground_stats'),api('/api/stadiums')]);
+  document.getElementById('groundsGrid').innerHTML=`<div class="table-wrap" style="margin-bottom:1.5rem">
+    <table><thead><tr><th>Venue</th><th>City</th><th>Matches</th><th>Avg Score</th><th>Highest</th><th>Bat 1st Wins</th><th>Field 1st Wins</th></tr></thead>
+    <tbody>${gs.map(g=>`<tr>
+      <td>${g.stadium_name}</td><td>${g.city}</td><td>${g.matches}</td>
+      <td class="text-gold">${g.avg_score?Math.round(g.avg_score):'—'}</td>
+      <td class="text-green">${g.highest_total||'—'}</td>
+      <td>${g.bat_first_wins||0}</td><td>${g.field_first_wins||0}</td>
+    </tr>`).join('')}</tbody></table></div>`;
+  document.getElementById('stadiumsTbody').innerHTML=st.map(s=>`<tr>
+    <td>${s.stadium_name}</td><td>${s.city}</td><td>${s.country}</td>
+    <td class="mono">${(s.capacity||0).toLocaleString()}</td>
+    <td style="font-size:.78rem;color:var(--muted)">${s.ends||'—'}</td>
+    <td style="font-size:.78rem;color:var(--cyan)">${s.pitch_type||'—'}</td>
+  </tr>`).join('');
+}
+
+// ── PARTNERSHIPS ─────────────────────────────────────────────────────────────
+async function loadPartnerships(){
+  const data=await api('/api/best_partnerships');
+  document.getElementById('partTbody').innerHTML=data.map((p,i)=>`<tr>
+    <td style="color:var(--muted)">${i+1}</td>
+    <td><strong>${p.p1_name}</strong> &amp; ${p.p2_name}</td>
+    <td>${f(p.team||'')} ${p.team||'—'}</td>
+    <td class="text-gold" style="font-weight:600">${p.runs}</td>
+    <td class="mono">${p.balls}</td>
+    <td>${p.balls>0?(p.runs/p.balls*6).toFixed(1):'—'}</td>
+    <td class="mono" style="font-size:.75rem">${p.match_date}</td>
+    <td><span class="badge ${p.match_stage==='Final'?'bf':p.match_stage==='Semi Final'?'bsf':'ba'}">${p.match_stage}</span></td>
+  </tr>`).join('');
+}
+
+// ── H2H ─────────────────────────────────────────────────────────────────────
+async function initH2H(){
+  const teams=await api('/api/teams');
+  const opts=teams.map(t=>`<option value="${t.team_name}">${f(t.team_name)} ${t.team_name}</option>`).join('');
+  document.getElementById('h2hT1').innerHTML=opts;
+  await updateH2HOptions();
+  document.getElementById('h2hT1').addEventListener('change', updateH2HOptions);
+}
+
+async function updateH2HOptions(){
+  const t1 = document.getElementById('h2hT1').value;
+  const opps = await api('/api/opponents/'+encodeURIComponent(t1));
+  if(opps.length){
+    document.getElementById('h2hT2').innerHTML = opps.map(t=>`<option value="${t}">${f(t)} ${t}</option>`).join('');
+  } else {
+    document.getElementById('h2hT2').innerHTML = '<option value="">No matches played</option>';
+  }
+}
+
+async function loadH2H(){
+  const t1=document.getElementById('h2hT1').value;
+  const t2=document.getElementById('h2hT2').value;
+  if(t1===t2){document.getElementById('h2hSummary').innerHTML='<div class="empty">Select two different teams.</div>';return;}
+  const data=await api(`/api/head_to_head?t1=${encodeURIComponent(t1)}&t2=${encodeURIComponent(t2)}`);
+  const t1w=data.filter(m=>m.winner===t1).length;
+  const t2w=data.filter(m=>m.winner===t2).length;
+  document.getElementById('h2hSummary').innerHTML=`<div class="h2h-summary">
+    <div class="h2h-team"><div style="font-size:2.5rem">${f(t1)}</div><div class="h2h-name">${t1}</div><div class="h2h-wins">${t1w}</div><div style="font-size:.73rem;color:var(--muted)">wins</div></div>
+    <div class="h2h-center"><div class="h2h-wins" style="font-size:2rem;color:var(--muted)">${data.length}</div><div style="font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px">Matches CT25</div></div>
+    <div class="h2h-team"><div style="font-size:2.5rem">${f(t2)}</div><div class="h2h-name">${t2}</div><div class="h2h-wins">${t2w}</div><div style="font-size:.73rem;color:var(--muted)">wins</div></div>
+  </div>`;
+  document.getElementById('h2hResult').innerHTML=data.length?data.map(m=>`
+    <div class="match-card">
+      <div><div class="match-date">${m.match_date}</div><div style="font-size:.68rem;color:var(--muted)">${m.match_stage}</div></div>
+      <div><div class="match-vs"><span>${f(m.team_1_name)} ${m.team_1_name}</span><span class="vs">vs</span><span>${f(m.team_2_name)} ${m.team_2_name}</span></div>
+        <div class="match-score">${m.team_1_score||'—'} | ${m.team_2_score||'—'}</div>
+        <div class="match-result"><span class="text-green">${f(m.winner||'')} ${m.winner||'?'}</span> won by ${m.win_margin}</div>
+      </div>
+      <div class="match-meta">${m.man_of_the_match?`<div class="mom">⭐ ${m.man_of_the_match}</div>`:''}
+        ${m.toss_winner?`<div style="font-size:.65rem;color:var(--muted)">🪙 ${m.toss_winner}</div>`:''}
+      </div>
+    </div>`).join(''):`<div class="empty">No matches found.</div>`;
+}
+
+// ── LIVE ─────────────────────────────────────────────────────────────────────
+async function loadLive(){
+  try{
+    const res=await api('/api/live');
+    const matches=(res.data?.data)||res.data||[];
+    const hasLive = matches.some(m => m.matchStarted && !m.matchEnded);
+    document.getElementById('headerLiveBadge').style.display = hasLive ? 'inline-block' : 'none';
+    if(!matches.length){document.getElementById('liveContent').innerHTML='<div class="empty">No live matches right now. Check during match days.</div>';return;}
+    document.getElementById('liveContent').innerHTML=`<div style="font-size:.73rem;color:var(--muted);margin-bottom:1rem">Source: ${res.source}</div>`+
+      matches.slice(0,10).map(m=>`<div class="live-card ${m.matchStarted&&!m.matchEnded?'live-now':''}">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">
+          ${m.matchStarted&&!m.matchEnded?'<span class="dot-live"></span><span style="font-size:.7rem;color:var(--red);font-weight:600">LIVE</span>':'<span style="font-size:.7rem;color:var(--muted)">'+(m.matchEnded?'COMPLETED':'UPCOMING')+'</span>'}
+        </div>
+        <div style="font-family:Bebas Neue,sans-serif;font-size:1.4rem">${m.t1||m.teamInfo?.[0]?.name||'TBD'} vs ${m.t2||m.teamInfo?.[1]?.name||'TBD'}</div>
+        <div style="font-family:DM Mono,monospace;font-size:.9rem;color:var(--cyan);margin-top:4px">${m.t1s||''} ${m.t2s?'| '+m.t2s:''}</div>
+        <div style="font-size:.75rem;color:var(--muted);margin-top:5px">${m.status||''}</div>
+        ${m.venue?`<div style="font-size:.7rem;color:var(--muted)">📍 ${m.venue}</div>`:''}
+      </div>`).join('');
+  }catch(e){document.getElementById('liveContent').innerHTML='<div class="empty">Could not fetch live data.</div>';}
+}
+
+// ── TEAM MODAL ────────────────────────────────────────────────────────────────
+async function openTeamModal(teamName,teamId){
+  document.getElementById('modalTeamTitle').textContent=`${f(teamName)} ${teamName}`;
+  document.getElementById('mInfo').innerHTML='<div class="loading">Loading...</div>';
+  document.getElementById('mSquad').innerHTML='<div class="loading">Loading...</div>';
+  document.getElementById('mJourney').innerHTML='<div class="loading">Loading...</div>';
+  // reset tabs
+  document.querySelectorAll('#teamModal .modal-tab').forEach((t,i)=>t.classList.toggle('active',i===0));
+  document.querySelectorAll('#teamModal .modal-panel').forEach((p,i)=>p.classList.toggle('active',i===0));
+  document.getElementById('teamModal').classList.add('open');
+  const[standings,squad,journey]=await Promise.all([
+    api('/api/standings'),
+    api(`/api/team_players/${teamId}`),
+    api(`/api/team_journey/${encodeURIComponent(teamName)}`)
+  ]);
+  const t=standings.find(x=>x.team_id===teamId)||{};
+  document.getElementById('modalTeamSub').textContent=`Group ${t.group_name} · ICC Rank #${t.team_rank||'?'}`;
+  document.getElementById('mInfo').innerHTML=`
+    <div class="info-grid">
+      <div class="info-item"><div class="lbl">Captain</div><div class="val">${t.captain||'—'}</div></div>
+      <div class="info-item"><div class="lbl">Coach</div><div class="val">${t.coach||'—'}</div></div>
+      <div class="info-item"><div class="lbl">Wicket Keeper</div><div class="val">${t.wicket_keeper||'—'}</div></div>
+      <div class="info-item"><div class="lbl">ICC Rank</div><div class="val">#${t.team_rank||'?'}</div></div>
+      <div class="info-item"><div class="lbl">Wins</div><div class="val text-green">${t.no_of_wins}</div></div>
+      <div class="info-item"><div class="lbl">Losses</div><div class="val text-red">${t.no_of_loses}</div></div>
+    </div>`;
+  document.getElementById('mSquad').innerHTML=`<div class="table-wrap">
+    <table><thead><tr><th>Player</th><th>Role</th><th>Style</th><th>Runs</th><th>SR</th><th>Avg</th><th>Wkts</th><th>Economy</th><th>Best</th></tr></thead>
+    <tbody>${squad.map(p=>`<tr class="clickable" onclick="openPlayerModal('${p.player_id}')">
+      <td class="hl">${p.player_name}</td>
+      <td style="font-size:.73rem;color:var(--purple)">${p.player_role||'—'}</td>
+      <td style="font-size:.7rem;color:var(--muted)">${p.batting_style||'—'}</td>
+      <td class="text-gold">${p.no_of_totalruns}</td>
+      <td>${p.strike_rate}</td><td>${p.batting_average}</td>
+      <td class="text-cyan">${p.no_of_wickets}</td>
+      <td>${p.no_of_wickets>0?p.economy:'—'}</td>
+      <td>${p.best_bowling!='0/0'?p.best_bowling:'—'}</td>
+    </tr>`).join('')}</tbody></table></div>`;
+  document.getElementById('mJourney').innerHTML=journey.length
+    ?`<div class="timeline">${journey.map(m=>{
+        const won=m.winner===teamName;
+        const opp=m.team_1_name===teamName?m.team_2_name:m.team_1_name;
+        return`<div class="tl-item"><div class="tl-dot ${m.winner?(won?'win':'loss'):''}"></div>
+          <div class="tl-card">
+            <div class="tl-date">${m.match_date} · ${m.match_stage}</div>
+            <div class="tl-matchup">vs ${f(opp)} ${opp} — ${m.team_1_score||'?'} | ${m.team_2_score||'?'}</div>
+            <div class="tl-result ${m.winner?(won?'win':'loss'):''}">
+              ${m.winner?(won?`✓ Won by ${m.win_margin}`:`✗ Lost by ${m.win_margin}`):'No result'}
+            </div>
+            ${m.man_of_the_match?`<div style="font-size:.68rem;color:var(--gold2)">⭐ MoM: ${m.man_of_the_match}</div>`:''}
+          </div></div>`;}).join('')}</div>`
+    :'<div class="empty">No matches found.</div>';
+}
+
+// ── MATCH MODAL ────────────────────────────────────────────────────────────────
+async function openMatchModal(matchId){
+  document.getElementById('matchModal').classList.add('open');
+  document.getElementById('modalMatchTitle').textContent='Loading...';
+  document.getElementById('mmOverview').innerHTML='<div class="loading">Loading...</div>';
+  document.querySelectorAll('#matchModal .modal-tab').forEach((t,i)=>t.classList.toggle('active',i===0));
+  document.querySelectorAll('#matchModal .modal-panel').forEach((p,i)=>p.classList.toggle('active',i===0));
+  const d=await api(`/api/match/${matchId}`);
+  const m=d.match;
+  document.getElementById('modalMatchTitle').textContent=`${f(m.team_1_name)} ${m.team_1_name} vs ${f(m.team_2_name)} ${m.team_2_name}`;
+  document.getElementById('modalMatchSub').textContent=`${m.match_date} · ${m.match_stage} · ${m.stadium_name||''}`;
+  document.getElementById('mmOverview').innerHTML=`
+    <div class="info-grid">
+      <div class="info-item"><div class="lbl">Winner</div><div class="val text-green">${f(m.winner||'')} ${m.winner||'TBD'}</div></div>
+      <div class="info-item"><div class="lbl">Margin</div><div class="val">${m.win_margin||'—'}</div></div>
+      <div class="info-item"><div class="lbl">Toss</div><div class="val">${m.toss_winner||'—'} (${m.toss_decision||'—'})</div></div>
+      <div class="info-item"><div class="lbl">Man of Match</div><div class="val text-gold">⭐ ${m.man_of_the_match||'—'}</div></div>
+      <div class="info-item"><div class="lbl">${m.team_1_name} Score</div><div class="val mono">${m.team_1_score||'—'} (${m.team_1_overs||'—'} ov)</div></div>
+      <div class="info-item"><div class="lbl">${m.team_2_name} Score</div><div class="val mono">${m.team_2_score||'—'} (${m.team_2_overs||'—'} ov)</div></div>
+    </div>
+    ${m.match_notes?`<div style="background:var(--s2);border-radius:8px;padding:.8rem 1rem;font-size:.83rem;color:var(--muted)">📝 ${m.match_notes}</div>`:''}`;
+
+  document.getElementById('mmInnings').innerHTML=d.innings.length?d.innings.map(inn=>`
+    <div class="inn-table">
+      <div class="inn-title">${inn.innings_no===1?'1st':'2nd'} Innings — ${inn.batting_team} batting</div>
+      <div style="font-family:Bebas Neue,sans-serif;font-size:1.8rem;color:var(--gold);margin-bottom:.5rem">${inn.total_runs}/${inn.total_wickets} <span style="font-size:1rem;color:var(--muted)">(${inn.total_overs} ov)</span></div>
+      <div class="inn-phases">
+        <div class="phase-box"><div class="ph-label">Powerplay (1-10)</div><div class="ph-val">${inn.pp_runs}/${inn.pp_wickets}</div><div class="ph-sub">Runs/Wkts</div></div>
+        <div class="phase-box"><div class="ph-label">Middle (11-40)</div><div class="ph-val">${inn.mid_runs}/${inn.mid_wickets}</div><div class="ph-sub">Runs/Wkts</div></div>
+        <div class="phase-box"><div class="ph-label">Death (41-50)</div><div class="ph-val">${inn.death_runs}/${inn.death_wickets}</div><div class="ph-sub">Runs/Wkts</div></div>
+      </div>
+      <div style="font-size:.73rem;color:var(--muted)">Extras: ${inn.extras} · Best over: Over ${inn.highest_over} (${inn.highest_over_runs} runs)</div>
+    </div>`).join(''):'<div class="empty">No innings data.</div>';
+
+  document.getElementById('mmPerformers').innerHTML=d.performers.length?`<div class="table-wrap">
+    <table><thead><tr><th>Player</th><th>Team</th><th>Pos</th><th>Runs</th><th>Balls</th><th>4s</th><th>6s</th><th>Dismissal</th><th>Overs</th><th>Runs Given</th><th>Wkts</th></tr></thead>
+    <tbody>${d.performers.map(p=>`<tr>
+      <td class="clickable hl" onclick="openPlayerModal('${p.player_id}')">${p.player_name}</td>
+      <td>${f(p.country_name)} ${p.team_name}</td>
+      <td style="color:var(--muted)">${p.batting_pos||'—'}</td>
+      <td class="text-gold">${p.runs_scored}</td><td>${p.balls_faced}</td>
+      <td>${p.fours}</td><td>${p.sixes}</td>
+      <td style="font-size:.75rem;color:var(--muted)">${p.dismissal||'—'}</td>
+      <td>${p.overs_bowled||'—'}</td>
+      <td>${p.overs_bowled?p.runs_given:'—'}</td>
+      <td class="text-cyan">${p.wickets||'—'}</td>
+    </tr>`).join('')}</tbody></table></div>`:'<div class="empty">No performer data for this match.</div>';
+
+  document.getElementById('mmPartnerships').innerHTML=d.partnerships.length?`<div class="table-wrap">
+    <table><thead><tr><th>Wicket</th><th>Pair</th><th>Team</th><th>Runs</th><th>Balls</th><th>RR</th></tr></thead>
+    <tbody>${d.partnerships.map(p=>`<tr>
+      <td style="color:var(--muted)">${p.wicket_no}${['st','nd','rd','th'][Math.min(p.wicket_no-1,3)]} wicket</td>
+      <td><strong>${p.p1_name}</strong> & ${p.p2_name}</td>
+      <td>${f(p.batting_team)} ${p.batting_team}</td>
+      <td class="text-gold" style="font-weight:600">${p.runs}</td>
+      <td class="mono">${p.balls}</td>
+      <td>${p.balls>0?(p.runs/p.balls*6).toFixed(1):'—'}</td>
+    </tr>`).join('')}</tbody></table></div>`:'<div class="empty">No partnership data for this match.</div>';
+}
+
+// ── PLAYER MODAL ─────────────────────────────────────────────────────────────
+async function openPlayerModal(playerId){
+  if(!playerId){return;}
+  document.getElementById('playerModal').classList.add('open');
+  document.getElementById('modalPlayerTitle').textContent='Loading...';
+  document.getElementById('pmStats').innerHTML='<div class="loading">Loading...</div>';
+  document.querySelectorAll('#playerModal .modal-tab').forEach((t,i)=>t.classList.toggle('active',i===0));
+  document.querySelectorAll('#playerModal .modal-panel').forEach((p,i)=>p.classList.toggle('active',i===0));
+  const d=await api(`/api/player/${playerId}`);
+  const p=d.player;
+  if(!p){document.getElementById('pmStats').innerHTML='<div class="empty">Player not found.</div>';return;}
+  document.getElementById('modalPlayerTitle').textContent=p.player_name;
+  document.getElementById('modalPlayerSub').textContent=`${f(p.country_name)} ${p.country_name} · ${p.player_role||'—'} · ${p.batting_style||'—'}`;
+
+  document.getElementById('pmStats').innerHTML=`
+    <div class="info-grid">
+      <div class="info-item"><div class="lbl">Total Runs</div><div class="val text-gold" style="font-size:1.4rem">${p.no_of_totalruns}</div></div>
+      <div class="info-item"><div class="lbl">Batting Avg</div><div class="val">${p.batting_average}</div></div>
+      <div class="info-item"><div class="lbl">Strike Rate</div><div class="val">${p.strike_rate}</div></div>
+      <div class="info-item"><div class="lbl">Highest Score</div><div class="val text-cyan">${p.highest_score}</div></div>
+      <div class="info-item"><div class="lbl">50s / 100s</div><div class="val">${p.no_of_50s} / ${p.no_of_100s}</div></div>
+      <div class="info-item"><div class="lbl">Batting Style</div><div class="val" style="font-size:.8rem">${p.batting_style||'—'}</div></div>
+    </div>`;
+
+  // Phase splits
+  const ppSR=p.pp_balls>0?(p.pp_runs/p.pp_balls*100).toFixed(1):0;
+  const midSR=p.mid_balls>0?(p.mid_runs/p.mid_balls*100).toFixed(1):0;
+  const deathSR=p.death_balls>0?(p.death_runs/p.death_balls*100).toFixed(1):0;
+  const totalBalls=(p.pp_balls||0)+(p.mid_balls||0)+(p.death_balls||0);
+  document.getElementById('pmPhase').innerHTML=`
+    <div class="info-grid">
+      <div class="info-item" style="background:rgba(0,201,255,.08)">
+        <div class="lbl">⚡ Powerplay (1-10)</div>
+        <div class="val text-cyan" style="font-size:1.2rem">${p.pp_runs} runs</div>
+        <div style="font-size:.73rem;color:var(--muted)">${p.pp_balls} balls · SR: ${ppSR}</div>
+      </div>
+      <div class="info-item" style="background:rgba(240,165,0,.08)">
+        <div class="lbl">🏏 Middle Overs (11-40)</div>
+        <div class="val text-gold" style="font-size:1.2rem">${p.mid_runs} runs</div>
+        <div style="font-size:.73rem;color:var(--muted)">${p.mid_balls} balls · SR: ${midSR}</div>
+      </div>
+      <div class="info-item" style="background:rgba(34,197,94,.08)">
+        <div class="lbl">💥 Death Overs (41-50)</div>
+        <div class="val text-green" style="font-size:1.2rem">${p.death_runs} runs</div>
+        <div style="font-size:.73rem;color:var(--muted)">${p.death_balls} balls · SR: ${deathSR}</div>
+      </div>
+      ${totalBalls>0?`<div class="info-item">
+        <div class="lbl">Phase Distribution</div>
+        <div class="split-bar" style="margin-top:8px">
+          ${p.pp_balls>0?`<div class="split-seg" style="width:${(p.pp_balls/totalBalls*100).toFixed(0)}%;background:var(--cyan)" title="Powerplay"></div>`:''}
+          ${p.mid_balls>0?`<div class="split-seg" style="width:${(p.mid_balls/totalBalls*100).toFixed(0)}%;background:var(--gold)" title="Middle"></div>`:''}
+          ${p.death_balls>0?`<div class="split-seg" style="width:${(p.death_balls/totalBalls*100).toFixed(0)}%;background:var(--green)" title="Death"></div>`:''}
+        </div>
+        <div style="font-size:.63rem;color:var(--muted);margin-top:4px">🔵 PP &nbsp; 🟡 Middle &nbsp; 🟢 Death</div>
+      </div>`:''}
+    </div>`;
+
+  document.getElementById('pmForm').innerHTML=d.form.length?`
+    <div style="background:rgba(0,201,255,.05);border:1px solid var(--border);border-radius:8px;padding:1rem;margin-bottom:1rem;display:flex;justify-content:space-between;align-items:center">
+      <div>
+        <div style="font-family:'Bebas Neue',sans-serif;color:var(--cyan);font-size:1.2rem">Peak Form Analysis</div>
+        <div style="font-size:.75rem;color:var(--muted)">Uses Kadane's Algorithm to find the max continuous sequence of runs.</div>
+      </div>
+      <button class="btn btn-sm" onclick="loadPeakFormInModal('${playerId}')" style="background:var(--cyan);color:black;border:none">Find Peak Form</button>
+    </div>
+    <div id="pmPeakResult" style="margin-bottom:1rem"></div>
+    
+    <div style="background:rgba(240,165,0,.05);border:1px solid var(--border);border-radius:8px;padding:1rem;margin-bottom:1rem;display:flex;justify-content:space-between;align-items:center">
+      <div>
+        <div style="font-family:'Bebas Neue',sans-serif;color:var(--gold);font-size:1.2rem">Moving Average</div>
+        <div style="font-size:.75rem;color:var(--muted)">Calculates 5-match moving average using advanced SQL Window Functions.</div>
+      </div>
+      <button class="btn btn-sm" onclick="loadMovingAverage('${playerId}')" style="background:var(--gold);color:black;border:none">Plot Form</button>
+    </div>
+    <div id="pmMaResult" style="margin-bottom:1rem"></div>
+
+    <div class="table-wrap">
+    <table><thead><tr><th>Date</th><th>vs</th><th>Stage</th><th>Runs</th><th>Balls</th><th>SR</th><th>Wkts</th></tr></thead>
+    <tbody>${d.form.map(r=>`<tr>
+      <td class="mono" style="font-size:.73rem">${r.match_date}</td>
+      <td>${f(r.opponent)} ${r.opponent}</td>
+      <td><span class="badge ${r.match_stage==='Final'?'bf':r.match_stage==='Semi Final'?'bsf':'ba'}">${r.match_stage}</span></td>
+      <td class="text-gold">${r.runs_scored}</td>
+      <td>${r.balls_faced}</td>
+      <td>${r.bat_sr||'—'}</td>
+      <td class="text-cyan">${r.wickets||'—'}</td>
+    </tr>`).join('')}</tbody></table></div>
+    <div style="margin-top:1rem">
+      <div style="font-size:.73rem;color:var(--muted);margin-bottom:.5rem">BEST PARTNERSHIPS IN THIS TOURNAMENT</div>
+      ${d.partnerships.length?d.partnerships.map(pt=>`
+        <div style="background:var(--s2);border-radius:8px;padding:.6rem 1rem;margin-bottom:.5rem;display:flex;justify-content:space-between;align-items:center">
+          <div style="font-size:.83rem">with ${pt.partner}</div>
+          <div style="font-family:Bebas Neue,sans-serif;font-size:1.2rem;color:var(--gold)">${pt.runs} runs</div>
+        </div>`).join(''):'<div class="empty">No partnership data.</div>'}
+    </div>`:'<div class="empty">No match-by-match data available for this player yet. Add via Admin panel.</div>';
+
+  document.getElementById('pmBowling').innerHTML=p.no_of_wickets>0?`
+    <div class="info-grid">
+      <div class="info-item"><div class="lbl">Total Wickets</div><div class="val text-cyan" style="font-size:1.4rem">${p.no_of_wickets}</div></div>
+      <div class="info-item"><div class="lbl">Economy</div><div class="val">${p.economy}</div></div>
+      <div class="info-item"><div class="lbl">Bowling Avg</div><div class="val">${p.bowling_average||'—'}</div></div>
+      <div class="info-item"><div class="lbl">Best Bowling</div><div class="val text-gold">${p.best_bowling}</div></div>
+    </div>
+    <div class="info-grid">
+      <div class="info-item" style="background:rgba(0,201,255,.08)">
+        <div class="lbl">⚡ Powerplay Wickets</div><div class="val text-cyan">${p.pp_wkts||0}</div>
+        <div style="font-size:.7rem;color:var(--muted)">${p.pp_runs_given||0} runs given</div>
+      </div>
+      <div class="info-item" style="background:rgba(34,197,94,.08)">
+        <div class="lbl">💥 Death Wickets</div><div class="val text-green">${p.death_wkts||0}</div>
+        <div style="font-size:.7rem;color:var(--muted)">${p.death_runs_given||0} runs given</div>
+      </div>
+    </div>
+    <div style="margin-top:1rem">
+      <div style="font-size:.73rem;color:var(--muted);margin-bottom:.8rem;text-transform:uppercase;letter-spacing:.8px">Wicket Type Breakdown</div>
+      <div class="info-grid">
+        <div class="info-item"><div class="lbl">Bowled</div><div class="val text-gold">${p.wkt_bowled||0}</div></div>
+        <div class="info-item"><div class="lbl">Caught</div><div class="val text-gold">${p.wkt_caught||0}</div></div>
+        <div class="info-item"><div class="lbl">LBW</div><div class="val text-gold">${p.wkt_lbw||0}</div></div>
+        <div class="info-item"><div class="lbl">Run Out</div><div class="val text-gold">${p.wkt_runout||0}</div></div>
+      </div>
+      <div style="font-size:.73rem;color:var(--muted);margin-bottom:.8rem;text-transform:uppercase;letter-spacing:.8px;margin-top:1rem">vs Batter Handedness</div>
+      <div class="info-grid">
+        <div class="info-item"><div class="lbl">vs Right-Handed</div><div class="val text-cyan">${p.wkts_vs_rh||0} wkts</div></div>
+        <div class="info-item"><div class="lbl">vs Left-Handed</div><div class="val text-cyan">${p.wkts_vs_lh||0} wkts</div></div>
+      </div>
+      <div style="font-size:.73rem;color:var(--muted)">${p.bowling_style||''}</div>
+    </div>`:'<div class="empty">This player has no bowling stats in CT25.</div>';
+}
+
+// ── MODALS CLOSE ───────────────────────────────────────────────────────────
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+['teamModal','matchModal','playerModal'].forEach(id=>{
+  document.getElementById(id).addEventListener('click',e=>{if(e.target.id===id)closeModal(id);});
+});
+
+// ── INIT ───────────────────────────────────────────────────────────────────
+loadOverview();
+document.querySelector('[data-tab="standings"]').addEventListener('click',()=>{if(!window._standingsLoaded){loadStandings();window._standingsLoaded=true;}});
+document.querySelector('[data-tab="players"]').addEventListener('click',()=>{if(!window._playersLoaded){loadPlayers();window._playersLoaded=true;}});
+
+// ── DAA LAB ──────────────────────────────────────────────────────────────────
+let fantasyPool = [];
+let lockedSquad = [];
+let poolFilter = 'All';
+
+async function loadFantasy(){
+  if(fantasyPool.length === 0){
+    document.getElementById('poolList').innerHTML = '<div class="loading" style="padding:20px;text-align:center">Loading players...</div>';
+    fantasyPool = await api('/api/daa/fantasy_pool');
+  }
+  renderPool();
+  renderSquad();
+}
+
+function setPoolFilter(role) {
+  poolFilter = role;
+  document.querySelectorAll('.pool-filter').forEach(b => {
+    const isAct = b.textContent.includes(role) || (role==='All'&&b.textContent==='All') || (role==='Batter'&&b.textContent==='BAT') || (role==='Bowler'&&b.textContent==='BOWL') || (role==='WKAR'&&b.textContent==='AR/WK');
+    b.classList.toggle('active', isAct);
+  });
+  renderPool();
+}
+
+function renderPool() {
+  const q = document.getElementById('poolSearch').value.toLowerCase();
+  const list = document.getElementById('poolList');
+  list.innerHTML = '';
+  
+  const filtered = fantasyPool.filter(p => {
+    if(lockedSquad.some(s => s.id === p.id)) return false;
+    if(poolFilter !== 'All' && p.role !== poolFilter) return false;
+    if(q && !p.name.toLowerCase().includes(q)) return false;
+    return true;
+  });
+  
+  filtered.forEach(p => {
+    list.innerHTML += `
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:8px 10px;display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <div style="font-weight:600;font-size:.85rem">${p.name}</div>
+          <div style="font-size:.7rem;color:var(--muted)">${f(p.team)} ${p.team} · ${p.role}</div>
+        </div>
+        <div style="text-align:right">
+          <div style="color:var(--gold);font-size:.85rem">${p.cost.toFixed(1)} Cr</div>
+          <button class="btn btn-sm" onclick="addToSquad('${p.id}')" style="padding:2px 8px;font-size:.7rem;margin-top:4px">+</button>
+        </div>
+      </div>
+    `;
+  });
+}
+
+function renderSquad() {
+  const tbody = document.getElementById('squadTbody');
+  tbody.innerHTML = '';
+  let usedBudget = 0;
+  let totalVal = 0;
+  const counts = {Batter:0, Bowler:0, WKAR:0};
+  
+  lockedSquad.forEach(p => {
+    usedBudget += p.cost;
+    totalVal += p.value;
+    counts[p.role]++;
+    tbody.innerHTML += `
+      <tr>
+        <td style="font-size:.75rem;color:var(--cyan)">${p.role}</td>
+        <td class="hl">${p.name}</td>
+        <td>${p.cost.toFixed(1)} Cr</td>
+        <td class="text-gold">${p.value}</td>
+        <td><button class="btn btn-sm" onclick="removeFromSquad('${p.id}')" style="background:transparent;color:var(--red);border:none;padding:0">✕</button></td>
+      </tr>
+    `;
+  });
+  
+  for(let i=lockedSquad.length; i<11; i++){
+    tbody.innerHTML += `
+      <tr>
+        <td colspan="5" style="text-align:center;color:var(--muted);font-size:.8rem;border-style:dashed">Empty Slot</td>
+      </tr>
+    `;
+  }
+  
+  document.getElementById('squadBudget').textContent = (100.0 - usedBudget).toFixed(1);
+  document.getElementById('squadValue').textContent = totalVal;
+  
+  document.getElementById('rc-Batter').textContent = `Batters: ${counts.Batter}/5`;
+  document.getElementById('rc-Batter').style.color = counts.Batter > 5 ? 'var(--red)' : counts.Batter === 5 ? 'var(--green)' : 'var(--muted)';
+  
+  document.getElementById('rc-Bowler').textContent = `Bowlers: ${counts.Bowler}/5`;
+  document.getElementById('rc-Bowler').style.color = counts.Bowler > 5 ? 'var(--red)' : counts.Bowler === 5 ? 'var(--green)' : 'var(--muted)';
+  
+  document.getElementById('rc-WKAR').textContent = `AR/WK: ${counts.WKAR}/1`;
+  document.getElementById('rc-WKAR').style.color = counts.WKAR > 1 ? 'var(--red)' : counts.WKAR === 1 ? 'var(--green)' : 'var(--muted)';
+}
+
+function addToSquad(id) {
+  if(lockedSquad.length >= 11) { alert("Squad is full (11 players max)."); return; }
+  const p = fantasyPool.find(x => x.id === id);
+  if(!p) return;
+  const currentCost = lockedSquad.reduce((s,x)=>s+x.cost, 0);
+  if(currentCost + p.cost > 100.0) { alert("Not enough budget!"); return; }
+  
+  lockedSquad.push(p);
+  renderPool();
+  renderSquad();
+}
+
+function removeFromSquad(id) {
+  lockedSquad = lockedSquad.filter(x => x.id !== id);
+  renderPool();
+  renderSquad();
+}
+
+function resetSquad() {
+  lockedSquad = [];
+  renderPool();
+  renderSquad();
+}
+
+async function autoFillSquad() {
+  const btn = document.querySelector('button[onclick="autoFillSquad()"]');
+  btn.innerHTML = "Optimizing...";
+  btn.disabled = true;
+  
+  try {
+    const res = await fetch('/api/daa/fantasy_suggest', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        locked_ids: lockedSquad.map(p => p.id),
+        budget: 100.0
+      })
+    }).then(r => r.json());
+    
+    if(res.error) {
+      alert("Algorithm failed: " + res.error);
+    } else {
+      res.suggested.forEach(sp => {
+        const p = fantasyPool.find(x => x.id === sp.id);
+        if(p && !lockedSquad.some(x => x.id === p.id)) {
+          lockedSquad.push(p);
+        }
+      });
+      renderPool();
+      renderSquad();
+    }
+  } catch(e) {
+    alert("API call failed.");
+  }
+  btn.innerHTML = "Auto-Fill Squad ✨";
+  btn.disabled = false;
+}
+
+async function loadPeakFormInModal(pId){
+  document.getElementById('pmPeakResult').innerHTML = '<div class="loading">Running Kadanes Algorithm...</div>';
+  const res = await api('/api/daa/peak_phase/'+pId);
+  if(res.start_idx===-1) { document.getElementById('pmPeakResult').innerHTML='<div class="empty" style="color:var(--gold)">No chronological match data available.</div>'; return; }
+  
+  document.getElementById('pmPeakResult').innerHTML = `
+    <div style="background:var(--surface);padding:1rem;border-radius:8px;border:1px solid var(--cyan);margin-bottom:1rem">
+      <div style="font-size:.8rem;color:var(--muted);text-transform:uppercase">Peak Form Maximum</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:2.5rem;color:var(--cyan)">${res.max_runs} Runs</div>
+      <div style="font-size:.8rem;color:var(--muted)">Over a span of ${res.end_idx - res.start_idx + 1} matches</div>
+    </div>
+    <div style="margin-bottom:1rem">
+      <div style="font-size:.75rem;color:var(--muted);margin-bottom:5px">Full Match Array (Runs):</div>
+      <div style="display:flex;gap:4px;flex-wrap:wrap">
+        ${res.all_runs.map((r,i)=>`<span style="padding:4px 8px;border-radius:4px;font-size:.8rem;background:${i>=res.start_idx&&i<=res.end_idx?'var(--cyan)':'var(--s2)'};color:${i>=res.start_idx&&i<=res.end_idx?'black':'var(--text)'}">${r}</span>`).join('')}
+      </div>
+    </div>`;
+}
+
+async function loadMovingAverage(pId){
+  document.getElementById('pmMaResult').innerHTML = '<div class="loading">Executing SQL Window Function...</div>';
+  const res = await api('/api/dbms/moving_average/'+pId);
+  if(!res.length) { document.getElementById('pmMaResult').innerHTML='<div class="empty">Not enough data.</div>'; return; }
+  
+  document.getElementById('pmMaResult').innerHTML = '<div style="background:var(--surface);padding:10px;border-radius:8px;border:1px solid var(--border)"><canvas id="maChart" height="150"></canvas></div>';
+  new Chart(document.getElementById('maChart').getContext('2d'), {
+    type: 'line',
+    data: {
+      labels: res.map(r=>r.match_date.substring(5)),
+      datasets: [
+        { label: 'Runs Scored', data: res.map(r=>r.runs_scored), borderColor: 'rgba(255,255,255,0.4)', borderDash: [5,5], fill: false, tension: 0 },
+        { label: '5-Match Moving Avg', data: res.map(r=>r.moving_avg_5), borderColor: '#f0a500', backgroundColor: 'rgba(240,165,0,0.1)', fill: true, tension: 0.4, borderWidth: 3 }
+      ]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: true, labels: { color: 'white' } } },
+      scales: { 
+        y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: 'white' } },
+        x: { grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: 'white' } }
+      }
+    }
+  });
+}
+
+async function loadDaaImpactSort(){
+  document.getElementById('playersTbody').innerHTML = '<tr><td colspan="14" class="loading">Calculating Impact Score (Merge Sort)...</td></tr>';
+  const res = await api('/api/daa/impact_sort');
+  document.getElementById('playersTbody').parentElement.innerHTML = `
+    <thead><tr><th>Rank</th><th>Player</th><th>Team</th><th>Impact Score</th><th>Formula breakdown</th></tr></thead>
+    <tbody id="playersTbody">${res.map((p,i)=>`<tr>
+        <td style="color:var(--muted)">${i+1}</td>
+        <td class="hl clickable" onclick="openPlayerModal('${p.player_id}')">${p.player_name}</td><td>${f(p.country_name)} ${p.country_name}</td>
+        <td style="font-family:'Bebas Neue',sans-serif;font-size:1.2rem;color:var(--green)">${p.impact_score}</td>
+        <td style="font-size:.7rem;color:var(--muted)">Runs:${p.no_of_totalruns} | Wkts:${p.no_of_wickets}</td>
+      </tr>`).join('')}</tbody>`;
+}
+
+async function loadDaaSearchTop(){
+  const q = document.getElementById('topSearchInput').value;
+  const resDiv = document.getElementById('topSearchResults');
+  if(!q) { resDiv.style.display='none'; return; }
+  
+  resDiv.style.display='block';
+  resDiv.innerHTML = '<div style="padding:10px;color:var(--muted);font-size:.8rem">Searching via Rabin-Karp...</div>';
+  
+  const res = await api('/api/daa/search?q='+encodeURIComponent(q));
+  if(!res.length){ resDiv.innerHTML='<div style="padding:10px;color:var(--gold);font-size:.8rem">No matches found.</div>'; return; }
+  
+  resDiv.innerHTML = `
+    <div style="padding:5px">
+      ${res.map(r=>`
+      <div class="clickable" onclick="document.getElementById('topSearchResults').style.display='none';openPlayerModal('${r.id}')" style="padding:8px 10px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <div style="font-size:.85rem;color:var(--text)">${r.name}</div>
+          <div style="font-size:.7rem;color:var(--muted)">${r.desc}</div>
+        </div>
+        <div style="font-size:.65rem;color:var(--purple);text-transform:uppercase">${r.type}</div>
+      </div>`).join('')}
+    </div>`;
+}
+
+async function loadDaaAutocomplete(){
+  const q = document.getElementById('topSearchInput').value;
+  const resDiv = document.getElementById('topSearchResults');
+  if(!q) { resDiv.style.display='none'; return; }
+  
+  resDiv.style.display='block';
+  
+  // Try ultra-fast Trie
+  const res = await api('/api/daa/autocomplete?q='+encodeURIComponent(q));
+  if(!res.length){ resDiv.innerHTML='<div style="padding:10px;color:var(--gold);font-size:.8rem">No matches found (Press Enter for Deep Search)</div>'; return; }
+  
+  resDiv.innerHTML = `
+    <div style="padding:5px">
+      <div style="font-size:0.65rem;color:var(--cyan);padding:0 5px 5px;text-transform:uppercase;letter-spacing:1px">Trie Fast Results (O(M))</div>
+      ${res.map(r=>`
+      <div class="clickable" onclick="document.getElementById('topSearchResults').style.display='none';openPlayerModal('${r.id}')" style="padding:8px 10px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <div style="font-size:.85rem;color:var(--text)">${r.name}</div>
+          <div style="font-size:.7rem;color:var(--muted)">${r.desc}</div>
+        </div>
+        <div style="font-size:.65rem;color:var(--purple);text-transform:uppercase">${r.type}</div>
+      </div>`).join('')}
+    </div>`;
+}
+
+async function loadBFSPath() {
+  const p1 = document.getElementById('bfsP1').value.trim();
+  const p2 = document.getElementById('bfsP2').value.trim();
+  const resDiv = document.getElementById('bfsResult');
+  if(!p1 || !p2) return;
+  
+  resDiv.innerHTML = '<div class="loading">Running BFS on Player Network...</div>';
+  const res = await api(`/api/daa/shortest_path?p1=${p1}&p2=${p2}`);
+  
+  if(!res.found) {
+    resDiv.innerHTML = '<div class="empty" style="color:var(--red)">No connection found between these players.</div>';
+    return;
+  }
+  
+  const pathHtml = res.names.map((name, i) => `
+    <div style="display:flex;align-items:center;margin-bottom:10px">
+      <div style="background:var(--surface);border:1px solid ${i===0||i===res.names.length-1?'var(--gold)':'var(--cyan)'};padding:8px 15px;border-radius:20px;font-weight:600">
+        ${name}
+      </div>
+      ${i < res.names.length - 1 ? `<div style="color:var(--muted);margin:0 15px;font-size:.8rem">played with ➔</div>` : ''}
+    </div>
+  `).join('');
+  
+  resDiv.innerHTML = `
+    <div style="background:var(--s2);border:1px solid var(--border);border-radius:8px;padding:1.5rem">
+      <div style="font-size:.8rem;color:var(--muted);text-transform:uppercase;margin-bottom:1rem">Degrees of Separation: <span style="color:var(--cyan);font-weight:bold">${res.names.length - 1}</span></div>
+      <div style="display:flex;flex-wrap:wrap;align-items:center">
+        ${pathHtml}
+      </div>
+    </div>
+  `;
+}
+
+async function loadBfsAutocomplete(inputId){
+  const q = document.getElementById(inputId).value;
+  const resDiv = document.getElementById(inputId+'_results');
+  if(!q) { resDiv.style.display='none'; return; }
+  
+  const res = await api('/api/daa/autocomplete?q='+encodeURIComponent(q));
+  if(!res.length){ resDiv.style.display='none'; return; }
+  
+  resDiv.style.display='block';
+  resDiv.innerHTML = res.map(r=>`
+    <div class="clickable" onclick="document.getElementById('${inputId}').value='${r.id}';document.getElementById('${inputId}_results').style.display='none';" style="padding:8px;border-bottom:1px solid var(--border);font-size:.8rem;color:var(--text)">
+      ${r.name} <span style="font-size:.7rem;color:var(--muted)">(${r.desc} - ${r.id})</span>
+    </div>
+  `).join('');
+}
+
+// Close search on click outside
+document.addEventListener('click', e => {
+  if(!e.target.closest('.header-right')) document.getElementById('topSearchResults').style.display='none';
+  if(!e.target.closest('#bfsP1') && !e.target.closest('#bfsP1_results')) {
+    const el = document.getElementById('bfsP1_results');
+    if(el) el.style.display='none';
+  }
+  if(!e.target.closest('#bfsP2') && !e.target.closest('#bfsP2_results')) {
+    const el = document.getElementById('bfsP2_results');
+    if(el) el.style.display='none';
+  }
+});
+
+document.getElementById('topSearchInput').addEventListener('keyup', e => {
+  if(e.key === 'Enter') loadDaaSearchTop();
+});
+
+// PDF Generation
+function downloadPDF() {
+  const btn = document.querySelector('button[onclick="downloadPDF()"]');
+  btn.innerText = 'Generating...';
+  
+  // Just grabbing the whole 'main' container for a snapshot
+  const element = document.querySelector('main');
+  
+  // Explicitly force background and text color so html2canvas doesn't default to white/transparent
+  const oldBg = element.style.backgroundColor;
+  const oldColor = element.style.color;
+  element.style.backgroundColor = '#080c18';
+  element.style.color = '#e2e8f0';
+  
+  const opt = {
+    margin:       0.2,
+    filename:     'ICC_CT25_Report.pdf',
+    image:        { type: 'jpeg', quality: 0.95 },
+    html2canvas:  { scale: 2, useCORS: true, backgroundColor: '#080c18', scrollY: 0 },
+    jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' },
+    pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
+  };
+  
+  html2pdf().set(opt).from(element).save().then(() => {
+    btn.innerText = '📄 PDF Report';
+    element.style.backgroundColor = oldBg;
+    element.style.color = oldColor;
+  });
+}
+</script>
+</body>
+</html>
