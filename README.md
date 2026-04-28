@@ -13,12 +13,12 @@ built with **Flask**, **SQLite**, and **Chart.js**.
 | Sr | Description                        | Link     |
 |----|------------------------------------|----------|
 | 1  | Project Code                       | [View](https://github.com/Toib765/ICC-Champions-Trophy-2025/tree/main/Project) |
-| 2  | Project Report                     | [View](\) |
+| 2  | Project Report                     | [View](https://github.com/Toib765/ICC-Champions-Trophy-2025/blob/main/CT25_Academic_Report%20final.pdf) |
 | 3  | Final PPT                          | [View](#) |
 | 4  | RA2411030030061_Certificate         | [View](https://github.com/Toib765/ICC-Champions-Trophy-2025/blob/main/Toib%20Fayaz%20Certificate.pdf) |
 | 5  | RA2411030030054_Certificate         | [View](https://github.com/Toib765/ICC-Champions-Trophy-2025/blob/main/ujjawal%20sharma%20certificate.pdf) |
-| 6  | RA2411030030061_CourseReport        | [View](#) |
-| 7  | RA2411030030054_CourseReport        | [View](#) |
+| 6  | RA2411030030061_CourseReport        | [View](https://github.com/Toib765/ICC-Champions-Trophy-2025/blob/main/DBMS_Course_Report_toib%20(1).pdf) |
+| 7  | RA2411030030054_CourseReport        | [View](https://github.com/Toib765/ICC-Champions-Trophy-2025/blob/main/DBMS_Course_Report_ujjawal.pdf) |
 
 ## Features
 
