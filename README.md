@@ -54,7 +54,7 @@ built with **Flask**, **SQLite**, and **Chart.js**.
 
 ### 2. Clone the Repository
 ```bash
-git clone https://github.com/YOUR_USERNAME/ct25-dashboard.git
+git clone https://github.com/Toib765/ICC-Champions-Trophy-2025.git
 cd ct25-dashboard
 ```
 
